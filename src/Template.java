@@ -8,12 +8,14 @@ public class Template extends Canvas implements Runnable{
 
     private boolean running = false;
     private Thread thread;
-
+    int x = 100;
+    int y = 100;
+    int mode = 0;
     public Template() {
         setSize(600,400);
         JFrame frame = new JFrame();
         frame.add(this);
-        frame.addKeyListener(new MyKeyListener());
+        this.addKeyListener(new MyKeyListener());
         this.addMouseMotionListener(new MyMouseMotionListener());
         this.addMouseListener(new MyMouseListener());
         requestFocus();
@@ -38,7 +40,15 @@ public class Template extends Canvas implements Runnable{
     }
 
     public void draw(Graphics g) {
-        g.clearRect(0,0,getWidth(),getHeight());
+        //g.clearRect(0,0,getWidth(),getHeight());
+        if (mode == 1) {
+            g.setColor(Color.BLACK);
+            g.fillOval(x,y,10,10);
+        }
+        if (mode == 2) {
+            g.setColor(Color.WHITE);
+            g.fillOval(x,y,10,10);
+        }
     }
 
     private void update() {
@@ -65,7 +75,7 @@ public class Template extends Canvas implements Runnable{
     }
 
     public void run() {
-        double ns = 1000000000.0 / 25.0;
+        double ns = 1000000000.0 / 1000000.0;
         double delta = 0;
         long lastTime = System.nanoTime();
 
@@ -89,6 +99,9 @@ public class Template extends Canvas implements Runnable{
 
         @Override
         public void mouseDragged(MouseEvent e) {
+            x = getMousePosition().x;
+            y = getMousePosition().y;
+
         }
 
         @Override
@@ -104,10 +117,19 @@ public class Template extends Canvas implements Runnable{
 
         @Override
         public void mousePressed(MouseEvent e) {
+            if (e.getButton() == 1) {
+                mode = 1;
+
+            }
+            if (e.getButton() == 3) {
+                mode = 2;
+            }
+
         }
 
         @Override
         public void mouseReleased(MouseEvent e) {
+            mode = 0;
         }
 
         @Override
